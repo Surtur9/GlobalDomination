@@ -95,7 +95,7 @@ public class Juego {
     public void iniciar() {
         System.out.println("¡El juego ha comenzado!");
         mostrarEstadoJugadores();
-        // Aquí puedes agregar lógica adicional para iniciar el flujo del juego (turnos, etc.)
+        // lógica para iniciar el flujo del juego
     }
 
     private void mostrarEstadoJugadores() {
@@ -107,12 +107,12 @@ public class Juego {
         }
     }
 
-    // Nuevo método para obtener la lista de jugadores
+    // Obtener la lista de jugadores
     public List<Jugador> getJugadores() {
         return jugadores;
     }
 
-    // Nuevo método para obtener la lista de países
+    // Obtener la lista de países
     public List<Pais> getPaises() {
         return paises;
     }
