@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+
 public class Juego {
     private List<Jugador> jugadores;
     private List<Pais> paises;
