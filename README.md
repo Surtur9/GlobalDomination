@@ -1,52 +1,75 @@
-# GlobalDomination Game - Instrucciones para Ejecutar
+# Global Domination - Game
 
-¡Bienvenido a **GlobalDomination**! Este documento te guiará para ejecutar el archivo `.jar` en tu computadora. Sigue los pasos indicados a continuación para asegurarte de que todo funcione sin problemas.
+Este es el repositorio del juego Global Domination. Puedes ejecutar el juego descargando el archivo `.jar` proporcionado o compilando los archivos fuente de Java que se encuentran en la carpeta `src`.
 
-## Requisitos Previos
-Para ejecutar este juego necesitas tener instalado **Java 8** en tu sistema. Puedes verificar si ya tienes Java instalado y, si no, instalarlo siguiendo las instrucciones de este documento.
+## Ejecución del Archivo `.jar`
 
-### Paso 1: Descargar el Archivo JAR
-1. Descarga el archivo `GlobalDomination.jar` desde el enlace proporcionado.
-2. Guárdalo en una ubicación fácil de recordar, como tu Escritorio o la carpeta Descargas.
+Para ejecutar el juego, asegúrate de tener instalado Java 8 en tu computadora. Si no tienes Java 8, puedes descargarlo [aquí](https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html).
 
-### Paso 2: Verificar Si Java Está Instalado
-1. Abre una terminal (en **Windows** puedes abrir el **CMD**, en **Mac** abre **Terminal**, y en **Linux** usa tu terminal preferida).
-2. Escribe el siguiente comando:
-   ```
-   java -version
-   ```
-3. Si Java está instalado, deberías ver una versión como `1.8.x_xxx`. Si ves una versión mayor a 1.8 (como 11 o 17), también debería funcionar.
-4. Si no tienes Java instalado, o si ves un mensaje de error, sigue el siguiente paso.
-
-### Paso 3: Descargar e Instalar Java 8
-1. Ve al siguiente enlace para descargar Java 8: [Java 8 JRE Download](https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html).
-2. Selecciona la versión apropiada para tu sistema operativo (Windows, Mac, o Linux).
-3. Descarga el instalador y ejecútalo.
-4. Sigue las instrucciones en pantalla para completar la instalación.
-5. Después de instalar Java, verifica la instalación nuevamente usando el comando `java -version` en tu terminal.
-
-### Paso 4: Ejecutar el Archivo JAR
-1. Abre la terminal en la carpeta donde guardaste `GlobalDomination.jar`. Puedes hacer esto navegando a la ubicación del archivo desde la terminal o usando los comandos `cd`.
-   - Ejemplo para Windows:
-     ```
-     cd C:\Users\tuUsuario\Descargas
-     ```
-   - Ejemplo para Linux/Mac:
-     ```
-     cd /home/tuUsuario/Descargas
-     ```
-2. Ejecuta el archivo `.jar` con el siguiente comando:
-   ```
+### Instrucciones para ejecutar el `.jar`:
+1. Descarga el archivo `GlobalDomination.jar` desde la carpeta `out/artifacts` o desde los releases de este repositorio.
+2. Abre una terminal y navega al directorio donde se encuentre el archivo `.jar` descargado.
+3. Ejecuta el siguiente comando:
+   ```sh
    java -jar GlobalDomination.jar
    ```
-3. Si todo está configurado correctamente, el juego debería iniciarse y podrás comenzar a jugar.
 
-## Solución de Problemas Comunes
-- **Error: "Java no está reconocido"**: Asegúrate de que Java está instalado y que la variable de entorno `JAVA_HOME` está configurada correctamente. Puedes intentar reiniciar tu computadora después de instalar Java.
-- **Error: "Versión no compatible"**: Asegúrate de que la versión de Java sea 1.8 o superior.
+## Instalación de Java 8
 
-## Recursos Adicionales
-- [Documentación de Java](https://docs.oracle.com/en/java/): Aquí encontrarás más información sobre cómo instalar y configurar Java en diferentes plataformas.
+Si no tienes Java 8 instalado, sigue estos pasos para instalarlo:
+1. Visita [esta página](https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html).
+2. Descarga la versión correspondiente a tu sistema operativo.
+3. Sigue las instrucciones de instalación proporcionadas por Oracle.
 
-¡Gracias por jugar **GlobalDomination**! Si tienes preguntas o problemas, no dudes en contactarnos.
+Para comprobar que Java se ha instalado correctamente, abre una terminal y escribe:
+```sh
+java -version
+```
+Asegúrate de que la versión mostrada sea 1.8.
+
+## Compilación y Ejecución del Código Fuente
+
+Si prefieres compilar el código fuente en tu máquina local, sigue estos pasos:
+
+### Paso 1: Clonar el Repositorio
+
+Clona el repositorio en tu máquina local utilizando Git:
+```sh
+git clone https://github.com/Surtur9/GlobalDomination.git
+```
+
+### Paso 2: Navegar a la Carpeta `src`
+
+Dentro del repositorio, encontrarás una carpeta llamada `src` que contiene todos los archivos fuente (`.java`) y la carpeta `resources` con los archivos necesarios para el juego.
+
+### Paso 3: Compilar el Código
+
+1. Navega a la carpeta raíz del repositorio donde se encuentra la carpeta `src`.
+2. Usa el siguiente comando para compilar todos los archivos `.java`:
+   ```sh
+   javac -d out src/*.java
+   ```
+   Esto compilará todos los archivos `.java` y colocará los archivos `.class` en la carpeta `out`.
+
+### Paso 4: Ejecutar el Juego
+
+Una vez compilado el código, puedes ejecutar el juego con el siguiente comando:
+```sh
+java -cp out PantallaInicial
+```
+
+## Estructura del Repositorio
+
+- `src/`: Contiene todos los archivos fuente (`.java`) y la carpeta `resources` con todos los recursos necesarios para el juego.
+- `out/artifacts/`: Contiene el archivo `.jar` listo para ser ejecutado.
+- `README.md`: Este archivo con instrucciones para ejecutar el juego.
+
+## Notas
+
+- **Java 8**: Asegúrate de tener Java 8 instalado, ya que el juego fue desarrollado y probado con esta versión.
+- **Compatibilidad**: El juego puede no ser compatible con versiones más nuevas de Java debido a cambios en la API y características del lenguaje.
+
+Si tienes algún problema para ejecutar el juego, no dudes en abrir un **Issue** en el repositorio.
+
+[Repositorio en GitHub](https://github.com/Surtur9/GlobalDomination)
 
