@@ -1,0 +1,10 @@
+import java.awt.*;
+
+public interface TurnoListener {
+    void pasarTurno();
+    void mostrarBannerAtaque(String mensaje);
+    void actualizarColorPais(Pais pais);
+
+    void jugadorGano(String mensaje);
+}
+
