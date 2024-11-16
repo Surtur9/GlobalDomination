@@ -21,12 +21,19 @@ public class Pais {
         this.armasNucleares = armasNucleares;
     }
 
+    // Getters y setters
     public String getNombre() {
         return nombre;
     }
-    public void setJugador(Jugador jugador){
+
+    public void setJugador(Jugador jugador) {
         this.jugador = jugador;
     }
+
+    public Jugador getJugador() {
+        return this.jugador;
+    }
+
     public boolean tieneCostas() {
         return tieneCostas;
     }
@@ -39,10 +46,17 @@ public class Pais {
         return porcentajeDestruccion;
     }
 
-    public void aumentarDestruccion(int porcentaje) {
+    public void recibirAtaque(int porcentaje) {
         this.porcentajeDestruccion += porcentaje;
         if (this.porcentajeDestruccion > 100) {
             this.porcentajeDestruccion = 100; // Limitar el porcentaje de destrucción a un máximo de 100%
+        }
+    }
+
+    public void repararDestruccion(int porcentaje) {
+        this.porcentajeDestruccion -= porcentaje;
+        if (this.porcentajeDestruccion < 0) {
+            this.porcentajeDestruccion = 0; // Limitar el porcentaje de destrucción a un mínimo de 0%
         }
     }
 
@@ -50,6 +64,7 @@ public class Pais {
     public int getTanques() {
         return tanques;
     }
+
     public void setTanques(int suma) {
         tanques += suma;
     }
@@ -57,6 +72,7 @@ public class Pais {
     public int getAviones() {
         return aviones;
     }
+
     public void setAviones(int suma) {
         aviones += suma;
     }
@@ -64,6 +80,7 @@ public class Pais {
     public int getSubmarinos() {
         return submarinos;
     }
+
     public void setSubmarinos(int suma) {
         submarinos += suma;
     }
@@ -71,11 +88,13 @@ public class Pais {
     public int getArmasNucleares() {
         return armasNucleares;
     }
+
     public void setArmasNucleares(int suma) {
         this.armasNucleares += suma;
     }
+
     // Método para obtener una descripción de los armamentos
     public String getDescripcionArmamentos() {
-        return "Tanques: " + tanques + ", Aviones: " + aviones + ", Submarinos: " + submarinos + "Armas nucleares:" + armasNucleares;
+        return "Tanques: " + tanques + ", Aviones: " + aviones + ", Submarinos: " + submarinos + ", Armas nucleares: " + armasNucleares;
     }
 }
