@@ -1,19 +1,22 @@
+import javafx.animation.FadeTransition;
 import javafx.animation.PauseTransition;
+import javafx.application.Platform;
+import javafx.geometry.Bounds;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
 import javafx.stage.Stage;
-import javafx.geometry.Bounds;
 import javafx.scene.text.Text;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Screen;
-import javafx.scene.text.Font;
-
+import javafx.scene.effect.DropShadow;
 
 import javax.swing.*;
 import java.io.BufferedReader;
@@ -26,16 +29,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class ventanaJuego {
+public class ventanaJuego implements TurnoListener{
     private Juego juego;
     private Pane layout;
     private Map<String, String> pathToCountryMap;
     private Text turnoActualText;
     private Pane infoColoresPane;
+    private JFrame panelControlAbierto = null; // Variable para el panel de control abierto
+    private Map<Jugador, String> jugadorColorMap;
 
     // Constructor que acepta un objeto Juego
     public ventanaJuego(Juego juego) {
         this.juego = juego;
+        jugadorColorMap = new HashMap<>();
+        inicializarMapaColores();
         this.layout = crearLayout();
         otorgarPuntosJugadorActual(); // Otorgar puntos al jugador inicial
         actualizarInfoColores();
@@ -66,11 +73,27 @@ public class ventanaJuego {
                         if (jugador != null) {
                             int jugadorIndex = juego.getJugadores().indexOf(jugador);
                             switch (jugadorIndex) {
-                                case 0 -> svgPath.setFill(Color.LIGHTCORAL); // Jugador 1: Rojo
-                                case 1 -> svgPath.setFill(Color.LIGHTBLUE);  // Jugador 2: Azul
-                                case 2 -> svgPath.setFill(Color.LIGHTGREEN); // Jugador 3: Verde
-                                case 3 -> svgPath.setFill(Color.PLUM);       // Jugador 4: Morado
+                                case 0: {
+                                    svgPath.setFill(Color.LIGHTCORAL); // Jugador 1: Rojo
+                                    break;
+                                }
+                                case 1: {
+                                    svgPath.setFill(Color.LIGHTBLUE);  // Jugador 2: Azul
+                                    break;
+                                }
+                                case 2: {
+                                    svgPath.setFill(Color.LIGHTGREEN); // Jugador 3: Verde
+                                    break;
+                                }
+                                case 3: {
+                                    svgPath.setFill(Color.PLUM);       // Jugador 4: Morado
+                                    break;
+                                }
+                                default: {
+                                    break;
+                                }
                             }
+
                         }
                     }
                 } else {
@@ -110,7 +133,6 @@ public class ventanaJuego {
         titulo.setY(100); // Posicionar el título en la parte superior
 
         root.getChildren().add(titulo);
-
 
         // Crear un panel para mostrar el turno actual
         Pane turnoPanel = new Pane();
@@ -153,6 +175,7 @@ public class ventanaJuego {
         pasarTurnoButton.setLayoutY(70 + panelHeight + 20); // Justo debajo de la caja de información
         pasarTurnoButton.setStyle("-fx-background-radius: 20; -fx-font-size: 16px;"); // Bordes redondeados y fuente más grande
         pasarTurnoButton.setOnAction(e -> {
+            cerrarPanelControl(); // Cerrar cualquier panel de control abierto
             juego.pasarTurno();
             otorgarPuntosJugadorActual(); // Otorgar puntos al jugador actual al inicio del turno
             actualizarTurnoText();
@@ -171,10 +194,10 @@ public class ventanaJuego {
         pathToCountryMap.put("path11", "India");
         pathToCountryMap.put("path93", "Francia");
         pathToCountryMap.put("path211", "China");
-        pathToCountryMap.put("style1", "Portugal");
+        pathToCountryMap.put("path60", "Portugal");
         pathToCountryMap.put("path12", "Brasil");
         pathToCountryMap.put("path5", "España");
-        pathToCountryMap.put("path25", "Inglaterra");
+        pathToCountryMap.put("path555", "Inglaterra");
         pathToCountryMap.put("path19", "Grecia");
         pathToCountryMap.put("path27", "Canadá");
         pathToCountryMap.put("path35", "Turquía");
@@ -267,15 +290,244 @@ public class ventanaJuego {
     }
 
     private void mostrarPanelControl(Pais pais, List<Pais> todosLosPaises) {
+        if (panelControlAbierto != null) {
+            return; // No se puede abrir otro panel de control si ya hay uno abierto
+        }
         SwingUtilities.invokeLater(() -> {
-            JFrame frame = new JFrame("Panel de Control");
-            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            frame.setSize(600, 500);
-            frame.setLocationRelativeTo(null);
-            frame.setAlwaysOnTop(true); // Hacer que el panel de control esté siempre encima de la ventana de juego
-            frame.add(new panelControl(pais, todosLosPaises));
-            frame.setVisible(true);
+            panelControlAbierto = new JFrame("Panel de Control");
+            panelControlAbierto.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            panelControlAbierto.setSize(600, 500);
+            panelControlAbierto.setLocationRelativeTo(null);
+            panelControlAbierto.setAlwaysOnTop(true);
+            panelControlAbierto.add(new panelControl(pais, todosLosPaises, this)); // Pasar la referencia del listener
+            panelControlAbierto.setVisible(true);
+
+            panelControlAbierto.addWindowListener(new java.awt.event.WindowAdapter() {
+                @Override
+                public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                    panelControlAbierto = null; // Permitir abrir un nuevo panel de control
+                }
+            });
         });
+    }
+
+    public void pasarTurno() {
+        Platform.runLater(() -> {
+            // Implementación de pasarTurno, lo que implica actualizar el estado del juego
+            juego.pasarTurno();
+            otorgarPuntosJugadorActual(); // Otorgar puntos al jugador actual al inicio del turno
+            actualizarTurnoText();
+            mostrarBannerTurno();
+            actualizarInfoColores(); // Actualizar la información de los puntos de los jugadores
+            cerrarPanelControl(); // Cerrar cualquier panel de control abierto
+        });
+    }
+
+    public void mostrarBannerAtaque(String mensaje) {
+        if (juego.getJugadores().size() == 1){
+            System.out.println("Se acabo");
+
+        }
+        Platform.runLater(() -> {
+            StackPane bannerPane = new StackPane();
+
+            // Texto del banner
+            Text bannerText = new Text(mensaje);
+            bannerText.setFill(Color.WHITE); // Cambiar el color del texto a blanco
+            bannerText.setFont(new Font("Arial", 24));
+
+            // Añadir sombra al texto para darle más contraste
+            DropShadow dropShadow = new DropShadow();
+            dropShadow.setColor(Color.BLACK);
+            dropShadow.setOffsetX(2);
+            dropShadow.setOffsetY(2);
+            bannerText.setEffect(dropShadow);
+
+            // Obtener los límites del texto para calcular el tamaño del fondo
+            Bounds textBounds = bannerText.getBoundsInLocal();
+            double textWidth = textBounds.getWidth() + 40; // Añadir un pequeño margen
+            double textHeight = textBounds.getHeight() + 20;
+
+            // Fondo del banner
+            Rectangle bannerBackground = new Rectangle(textWidth, textHeight);
+            bannerBackground.setFill(Color.GRAY);
+            bannerBackground.setArcWidth(20);
+            bannerBackground.setArcHeight(20);
+
+            // Aplicar un borde negro al rectángulo del fondo
+            bannerBackground.setStroke(Color.BLACK);
+            bannerBackground.setStrokeWidth(3);
+
+            // Añadir fondo y texto al contenedor del banner
+            bannerPane.getChildren().addAll(bannerBackground, bannerText);
+            bannerPane.setLayoutX((Screen.getPrimary().getBounds().getWidth() - textWidth) / 2); // Centrar el banner horizontalmente
+            bannerPane.setLayoutY(Screen.getPrimary().getBounds().getHeight() / 2 - (textHeight / 2)); // Centrar el banner verticalmente
+
+            layout.getChildren().add(bannerPane);
+
+            // Remover el banner después de 5 segundos con una transición de desvanecimiento
+            PauseTransition pause = new PauseTransition(Duration.seconds(5));
+            pause.setOnFinished(e -> {
+                FadeTransition fadeTransition = new FadeTransition(Duration.seconds(2), bannerPane);
+                fadeTransition.setFromValue(1.0);
+                fadeTransition.setToValue(0.0);
+                fadeTransition.setOnFinished(event -> layout.getChildren().remove(bannerPane));
+                fadeTransition.play();
+            });
+            pause.play();
+        });
+    }
+
+    @Override
+    public void actualizarColorPais(Pais pais) {
+        Platform.runLater(() -> {
+            // Buscar el id del país en el mapa pathToCountryMap utilizando el nombre del país
+            String nombrePais = pais.getNombre();
+            String pathId = pathToCountryMap.entrySet().stream()
+                    .filter(entry -> entry.getValue().equalsIgnoreCase(nombrePais))
+                    .map(Map.Entry::getKey)
+                    .findFirst()
+                    .orElse(null);
+
+            if (pathId != null) {
+                // Encontrar el SVGPath correspondiente en el layout
+                for (Node node : layout.getChildren()) {
+                    if (node instanceof SVGPath) {
+                        SVGPath svgPath = (SVGPath) node;
+                        if (svgPath.getId().equals(pathId)) {
+                            // Pintar el país de negro
+                            svgPath.setFill(Color.BLACK);
+
+                            // Quitar el país de la lista de países del jugador
+                            Jugador jugador = pais.getJugador();
+                            if (jugador != null) {
+                                jugador.getPaises().remove(pais);
+                                pais.setJugador(null); // Eliminar la relación de pertenencia del país con el jugador
+                            }
+                            break;
+                        }
+                    }
+                }
+
+            }
+        });
+    }
+
+    @Override
+    public void jugadorGano(String mensaje) {
+        Platform.runLater(() -> {
+            StackPane bannerPane = new StackPane();
+
+            // Texto del banner
+            Text bannerText = new Text(mensaje);
+            bannerText.setFill(Color.WHITE); // Cambiar el color del texto a blanco
+            bannerText.setFont(new Font("Arial", 48)); // Hacer el texto más grande
+
+            // Añadir sombra al texto para darle más contraste
+            DropShadow dropShadow = new DropShadow();
+            dropShadow.setColor(Color.BLACK);
+            dropShadow.setOffsetX(5);
+            dropShadow.setOffsetY(5);
+            bannerText.setEffect(dropShadow);
+
+            // Obtener los límites del texto para calcular el tamaño del fondo
+            Bounds textBounds = bannerText.getBoundsInLocal();
+            double textWidth = textBounds.getWidth() + 80; // Añadir un margen amplio
+            double textHeight = textBounds.getHeight() + 40;
+
+            // Fondo del banner
+            Rectangle bannerBackground = new Rectangle(textWidth, textHeight);
+            bannerBackground.setFill(Color.DARKRED); // Fondo rojo oscuro para resaltar
+            bannerBackground.setArcWidth(30);
+            bannerBackground.setArcHeight(30);
+
+            // Aplicar un borde negro al rectángulo del fondo
+            bannerBackground.setStroke(Color.BLACK);
+            bannerBackground.setStrokeWidth(5);
+
+            // Añadir fondo y texto al contenedor del banner
+            bannerPane.getChildren().addAll(bannerBackground, bannerText);
+            bannerPane.setLayoutX((Screen.getPrimary().getBounds().getWidth() - textWidth) / 2); // Centrar el banner horizontalmente
+            bannerPane.setLayoutY((Screen.getPrimary().getBounds().getHeight() / 2) - (textHeight / 2)); // Centrar el banner verticalmente
+
+            layout.getChildren().add(bannerPane);
+
+            // Remover el banner después de 10 segundos con una transición de desvanecimiento
+            PauseTransition pause = new PauseTransition(Duration.seconds(10));
+            pause.setOnFinished(e -> {
+                FadeTransition fadeTransition = new FadeTransition(Duration.seconds(3), bannerPane);
+                fadeTransition.setFromValue(1.0);
+                fadeTransition.setToValue(0.0);
+                fadeTransition.setOnFinished(event -> {
+                    layout.getChildren().remove(bannerPane);
+                    Platform.exit(); // Cerrar el juego completamente
+                });
+                fadeTransition.play();
+            });
+            pause.play();
+        });
+    }
+
+
+
+
+    public void jugadorPerdio(String mensaje) {
+        Platform.runLater(() -> {
+            StackPane bannerPane = new StackPane();
+
+            // Texto del banner
+            Text bannerText = new Text(mensaje);
+            bannerText.setFill(Color.WHITE); // Cambiar el color del texto a blanco
+            bannerText.setFont(new Font("Arial", 24));
+
+            // Añadir sombra al texto para darle más contraste
+            DropShadow dropShadow = new DropShadow();
+            dropShadow.setColor(Color.BLACK);
+            dropShadow.setOffsetX(2);
+            dropShadow.setOffsetY(2);
+            bannerText.setEffect(dropShadow);
+
+            // Obtener los límites del texto para calcular el tamaño del fondo
+            Bounds textBounds = bannerText.getBoundsInLocal();
+            double textWidth = textBounds.getWidth() + 40; // Añadir un pequeño margen
+            double textHeight = textBounds.getHeight() + 20;
+
+            // Fondo del banner
+            Rectangle bannerBackground = new Rectangle(textWidth, textHeight);
+            bannerBackground.setFill(Color.GRAY);
+            bannerBackground.setArcWidth(20);
+            bannerBackground.setArcHeight(20);
+
+            // Aplicar un borde negro al rectángulo del fondo
+            bannerBackground.setStroke(Color.BLACK);
+            bannerBackground.setStrokeWidth(3);
+
+            // Añadir fondo y texto al contenedor del banner
+            bannerPane.getChildren().addAll(bannerBackground, bannerText);
+            bannerPane.setLayoutX((Screen.getPrimary().getBounds().getWidth() - textWidth) / 2); // Centrar el banner horizontalmente
+            bannerPane.setLayoutY(Screen.getPrimary().getBounds().getHeight() / 2 - (textHeight / 2)); // Centrar el banner verticalmente
+
+            layout.getChildren().add(bannerPane);
+
+            // Remover el banner después de 5 segundos con una transición de desvanecimiento
+            PauseTransition pause = new PauseTransition(Duration.seconds(5));
+            pause.setOnFinished(e -> {
+                FadeTransition fadeTransition = new FadeTransition(Duration.seconds(2), bannerPane);
+                fadeTransition.setFromValue(1.0);
+                fadeTransition.setToValue(0.0);
+                fadeTransition.setOnFinished(event -> layout.getChildren().remove(bannerPane));
+                fadeTransition.play();
+            });
+            pause.play();
+        });
+    }
+
+
+    private void cerrarPanelControl() {
+        if (panelControlAbierto != null) {
+            panelControlAbierto.dispose();
+            panelControlAbierto = null;
+        }
     }
 
     private void otorgarPuntosJugadorActual() {
@@ -285,23 +537,112 @@ public class ventanaJuego {
     }
 
     private void mostrarBannerTurno() {
-        Jugador jugadorActual = juego.getJugadorActual();
-        int puntosOtorgados = jugadorActual.getPaises().size();
-        int puntosTotales = jugadorActual.getPuntos();
-    }
+        Platform.runLater(() -> {
+            Jugador jugadorActual = juego.getJugadorActual();
+            int puntosOtorgados = jugadorActual.getPaises().size();
+            int puntosTotales = jugadorActual.getPuntos();
 
+            StackPane bannerPane = new StackPane();
+
+            // Texto del banner
+            Text bannerText = new Text("Turno de: " + jugadorActual.getNombre() + " - Se le otorgan " + puntosOtorgados +
+                    " puntos. Puntos totales: " + puntosTotales);
+            bannerText.setFill(Color.WHITE); // Cambiar el color del texto a blanco
+            bannerText.setFont(new Font("Arial", 24));
+
+            // Añadir sombra al texto para darle más contraste
+            DropShadow dropShadow = new DropShadow();
+            dropShadow.setColor(Color.BLACK);
+            dropShadow.setOffsetX(2);
+            dropShadow.setOffsetY(2);
+            bannerText.setEffect(dropShadow);
+
+            // Obtener los límites del texto para calcular el tamaño del fondo
+            Bounds textBounds = bannerText.getBoundsInLocal();
+            double textWidth = textBounds.getWidth() + 40; // Añadir un pequeño margen
+            double textHeight = textBounds.getHeight() + 20;
+
+            // Fondo del banner
+            Rectangle bannerBackground = new Rectangle(textWidth, textHeight);
+            bannerBackground.setFill(Color.GRAY);
+            bannerBackground.setArcWidth(20);
+            bannerBackground.setArcHeight(20);
+
+            // Aplicar un borde negro al rectángulo del fondo
+            bannerBackground.setStroke(Color.BLACK);
+            bannerBackground.setStrokeWidth(3);
+
+            // Añadir fondo y texto al contenedor del banner
+            bannerPane.getChildren().addAll(bannerBackground, bannerText);
+            bannerPane.setLayoutX((Screen.getPrimary().getBounds().getWidth() - textWidth) / 2); // Centrar el banner horizontalmente
+            bannerPane.setLayoutY(Screen.getPrimary().getBounds().getHeight() - 150); // Posicionar el banner en la parte inferior
+
+            layout.getChildren().add(bannerPane);
+
+            // Remover el banner después de 5 segundos con una transición de desvanecimiento
+            PauseTransition pause = new PauseTransition(Duration.seconds(5));
+            pause.setOnFinished(e -> {
+                FadeTransition fadeTransition = new FadeTransition(Duration.seconds(2), bannerPane);
+                fadeTransition.setFromValue(1.0);
+                fadeTransition.setToValue(0.0);
+                fadeTransition.setOnFinished(event -> layout.getChildren().remove(bannerPane));
+                fadeTransition.play();
+            });
+            pause.play();
+        });
+    }
 
 
     private void actualizarTurnoText() {
         turnoActualText.setText("Turno de: " + juego.getJugadorActual().getNombre());
     }
 
-    private void actualizarInfoColores() {
-        // Limpiar el panel antes de añadir los textos actualizados
-        infoColoresPane.getChildren().clear();
+    private void inicializarMapaColores() {
+        List<Jugador> jugadores = juego.getJugadores();
+        for (int i = 0; i < jugadores.size(); i++) {
+            Jugador jugador = jugadores.get(i);
+            String color;
+            switch (i) {
+                case 0:
+                    color = "Rojo";
+                    break;
+                case 1:
+                    color = "Azul";
+                    break;
+                case 2:
+                    color = "Verde";
+                    break;
+                case 3:
+                    color = "Morado";
+                    break;
+                default:
+                    color = "Desconocido";
+                    break;
+            }
 
-        
-        
+            jugadorColorMap.put(jugador, color);
+        }
+    }
+
+    private void actualizarInfoColores() {
+        StringBuilder infoColoresStringBuilder = new StringBuilder();
+
+        for (Jugador jugador : juego.getJugadores()) {
+            String color = jugadorColorMap.getOrDefault(jugador, "Desconocido");
+            infoColoresStringBuilder.append(jugador.getNombre())
+                    .append(": ").append(color)
+                    .append(" - Puntos: ").append(jugador.getPuntos())
+                    .append("\n");
+        }
+
+        Text infoColoresText = new Text(infoColoresStringBuilder.toString());
+        infoColoresText.setFill(Color.WHITE);
+        infoColoresText.setFont(new Font("Arial", 16));
+        infoColoresText.setX(50);
+        infoColoresText.setY(90);
+
+        infoColoresPane.getChildren().clear();
+        infoColoresPane.getChildren().add(infoColoresText);
     }
 
     public void mostrar(Stage stage) {
