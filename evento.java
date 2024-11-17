@@ -16,7 +16,7 @@ public class evento {
     }
 
     public void aplicarEvento(Pais pais) {
-        pais.aumentarDestruccion(porcentajeDestruccion);
+        pais.recibirAtaque(porcentajeDestruccion);
         System.out.println(tipo + " destruyó " + porcentajeDestruccion + "% de " + pais.getNombre());
     }
 }
