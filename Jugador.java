@@ -39,6 +39,4 @@ public class Jugador {
             System.out.println("No tienes suficientes puntos.");
         }
     }
-
-    // Otros métodos necesarios
 }
