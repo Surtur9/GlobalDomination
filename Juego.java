@@ -100,7 +100,6 @@ public class Juego {
     public void iniciar() {
         System.out.println("¡El juego ha comenzado!");
         mostrarEstadoJugadores();
-        // Aquí puedes agregar lógica adicional para iniciar el flujo del juego (turnos, etc.)
     }
 
     private void mostrarEstadoJugadores() {
@@ -151,7 +150,7 @@ public class Juego {
             if (ventanaJuegoListener != null) {
                 ventanaJuegoListener.jugadorGano(jugadores.get(0).getNombre() + " ha ganado el juego.");
             }
-            return; // Finalizar el método
+            return;
         }
 
         // Imprimir el turno actual si hay más de un jugador restante
