@@ -27,43 +27,6 @@ java -version
 ```
 Asegúrate de que la versión mostrada sea 1.8.
 
-## Compilación y Ejecución del Código Fuente
-
-Si prefieres compilar el código fuente en tu máquina local, sigue estos pasos:
-
-### Paso 1: Clonar el Repositorio
-
-Clona el repositorio en tu máquina local utilizando Git:
-```sh
-git clone https://github.com/Surtur9/GlobalDomination.git
-```
-
-### Paso 2: Navegar a la Carpeta `src`
-
-Dentro del repositorio, encontrarás una carpeta llamada `src` que contiene todos los archivos fuente (`.java`) y la carpeta `resources` con los archivos necesarios para el juego.
-
-### Paso 3: Compilar el Código
-
-1. Navega a la carpeta raíz del repositorio donde se encuentra la carpeta `src`.
-2. Usa el siguiente comando para compilar todos los archivos `.java`:
-   ```sh
-   javac -d out src/*.java
-   ```
-   Esto compilará todos los archivos `.java` y colocará los archivos `.class` en la carpeta `out`.
-
-### Paso 4: Ejecutar el Juego
-
-Una vez compilado el código, puedes ejecutar el juego con el siguiente comando:
-```sh
-java -cp out PantallaInicial
-```
-
-## Estructura del Repositorio
-
-- `src/`: Contiene todos los archivos fuente (`.java`) y la carpeta `resources` con todos los recursos necesarios para el juego.
-- `out/artifacts/`: Contiene el archivo `.jar` listo para ser ejecutado.
-- `README.md`: Este archivo con instrucciones para ejecutar el juego.
-
 ## Notas
 
 - **Java 8**: Asegúrate de tener Java 8 instalado, ya que el juego fue desarrollado y probado con esta versión.
