@@ -7,7 +7,7 @@ Este es el repositorio del juego Global Domination. Puedes ejecutar el juego des
 Para ejecutar el juego, asegúrate de tener instalado Java 8 en tu computadora. Si no tienes Java 8, puedes descargarlo [aquí](https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html).
 
 ### Instrucciones para ejecutar el `.jar`:
-1. Descarga el archivo `GlobalDomination.jar` desde la carpeta `out/artifacts` o desde los releases de este repositorio.
+1. Descarga el archivo `GlobalDomination.jar` desde los releases de este repositorio.
 2. Abre una terminal y navega al directorio donde se encuentre el archivo `.jar` descargado.
 3. Ejecuta el siguiente comando:
    ```sh
