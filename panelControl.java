@@ -20,10 +20,10 @@ public class panelControl extends JPanel {
         // Información del país y del jugador
         JLabel lblNombrePais = new JLabel("País: " + pais.getNombre());
         lblNombrePais.setHorizontalAlignment(SwingConstants.CENTER);
-        lblNombrePais.setFont(new Font("Arial", Font.BOLD, 20)); // Texto más grande
+        lblNombrePais.setFont(new Font("Arial", Font.BOLD, 20)); 
         JLabel lblJugador = new JLabel(pais.getJugador().getNombre() + " - Puntos: " + pais.getJugador().getPuntos());
         lblJugador.setHorizontalAlignment(SwingConstants.CENTER);
-        lblJugador.setFont(new Font("Arial", Font.BOLD, 20)); // Texto más grande
+        lblJugador.setFont(new Font("Arial", Font.BOLD, 20)); 
 
         // Añadir etiquetas para el nombre del país y el jugador
         gbc.gridx = 0;
